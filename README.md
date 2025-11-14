@@ -4,7 +4,7 @@ Este é um projeto de customização e modernização de um jogo Monopoly cláss
 
 O projeto original foi totalmente traduzido para Português do Brasil e adaptado com um tabuleiro temático, regras e cartas personalizadas para a cidade do Rio de Janeiro.
 
-![Insira um screenshot do seu jogo aqui!](https://i.imgur.com/PLACEHOLDER.png)
+
 
 ---
 
@@ -40,8 +40,3 @@ Este jogo roda inteiramente no navegador, sem necessidade de um servidor.
 
 ---
 
-## 📄 Créditos
-
-Este projeto é uma modificação, tradução e modernização de um projeto open-source existente.
-* **Motor do Jogo:** O "motor" de lógica (`monopoly.js`) e a estrutura original foram criados por **Daniel Moyer** (Copyright 2013-2020).
-* **Tradução, Customização e Refatoração:** [Seu Nome Aqui]
