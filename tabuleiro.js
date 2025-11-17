@@ -16,7 +16,6 @@ function Square(name, pricetext, color, price, groupNumber, baserent, rent1, ren
 	this.rent5 = (rent5 || 0);
 	this.landcount = 0;
 
-	// Preços das casas
 	if (groupNumber === 3 || groupNumber === 4) {
 		this.houseprice = 50;
 	} else if (groupNumber === 5 || groupNumber === 6) {
@@ -36,60 +35,55 @@ function Card(text, action) {
 }
 
 function corrections() {
-	// Esta função ajusta o nome de uma propriedade.
-	document.getElementById("cell1name").textContent = "Bangu"; 
+	// PROTEÇÃO: Verifica se o elemento existe antes de alterar.
+	// Isso impede que o erro "Cannot set property of null" pare o jogo.
+	var cell1 = document.getElementById("cell1name");
+	if (cell1) {
+		cell1.textContent = "Bangu";
+	}
 
-	// Adiciona imagens de ícones
-	document.getElementById("enlarge5token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; bottom: 20px;" />';
-	document.getElementById("enlarge15token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
-	document.getElementById("enlarge25token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
-	document.getElementById("enlarge35token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
-	document.getElementById("enlarge12token").innerHTML += '<img src="images/electric_icon.png" height="60" width="48" alt="" style="position: relative; top: -20px;" />';
-	document.getElementById("enlarge28token").innerHTML += '<img src="images/water_icon.png" height="60" width="78" alt="" style="position: relative; top: -20px;" />';
+	// Só tenta adicionar imagens se o elemento base existir
+	if(document.getElementById("enlarge5token")) document.getElementById("enlarge5token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; bottom: 20px;" />';
+	if(document.getElementById("enlarge15token")) document.getElementById("enlarge15token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
+	if(document.getElementById("enlarge25token")) document.getElementById("enlarge25token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
+	if(document.getElementById("enlarge35token")) document.getElementById("enlarge35token").innerHTML += '<img src="images/train_icon.png" height="60" width="65" alt="" style="position: relative; top: -20px;" />';
+	if(document.getElementById("enlarge12token")) document.getElementById("enlarge12token").innerHTML += '<img src="images/electric_icon.png" height="60" width="48" alt="" style="position: relative; top: -20px;" />';
+	if(document.getElementById("enlarge28token")) document.getElementById("enlarge28token").innerHTML += '<img src="images/water_icon.png" height="60" width="78" alt="" style="position: relative; top: -20px;" />';
 }
 
 function utiltext() {
-	// Texto para Companhias (Light / Naturgy)
 	return '&nbsp;&nbsp;&nbsp;&nbsp;Se 1 "Companhia" é sua, o aluguel é 4x o valor dos dados.<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;Se ambas "Companhias" são suas, o aluguel é 10x o valor dos dados.';
 }
 
 function transtext() {
-    // Texto para Transportes (Metrô, Supervia, etc)
 	return '<div style="font-size: 14px; line-height: 1.5;">Aluguel<span style="float: right;">R$25.</span><br />Se 2 Transportes são seus<span style="float: right;">50.</span><br />Se 3 &nbsp; &nbsp; " &nbsp; &nbsp; " &nbsp; &nbsp; "<span style="float: right;">100.</span><br />Se 4 &nbsp; &nbsp; " &nbsp; &nbsp; " &nbsp; &nbsp; "<span style="float: right;">200.</span></div>';
 }
 
-// ### INÍCIO DA MUDANÇA DE LÓGICA (ESTACIONAMENTO GRÁTIS) ###
-
 function luxurytax() {
-    // Mudei de "Luxury Tax" para "IPVA"
 	addAlert(player[turn].name + " pagou R$100 de IPVA.");
 	player[turn].pay(100, 0);
 	
-	// Adiciona dinheiro ao pote do Estacionamento Grátis
-	freeParkingPot += 100;
-	addAlert("R$100 foram adicionados ao Estacionamento Grátis!");
+	if (typeof freeParkingPot !== 'undefined') {
+		freeParkingPot += 100;
+		addAlert("R$100 foram adicionados ao Estacionamento Grátis!");
+	}
 
 	$("#landed").show().text("Você caiu no IPVA. Pague R$100.");
 }
 
 function citytax() {
-    // Mudei de "City Tax" para "IPTU"
 	addAlert(player[turn].name + " pagou R$200 de IPTU.");
 	player[turn].pay(200, 0);
 
-	// Adiciona dinheiro ao pote do Estacionamento Grátis
-	freeParkingPot += 200;
-	addAlert("R$200 foram adicionados ao Estacionamento Grátis!");
+	if (typeof freeParkingPot !== 'undefined') {
+		freeParkingPot += 200;
+		addAlert("R$200 foram adicionados ao Estacionamento Grátis!");
+	}
 
 	$("#landed").show().text("Você caiu no IPTU. Pague R$200.");
 }
 
-// ### FIM DA MUDANÇA DE LÓGICA ###
-
-
 var square = [];
-
-// *** CUSTOMIZAÇÃO DO TABULEIRO (RIO DE JANEIRO) ***
 
 square[0] = new Square("INÍCIO", "RECEBA R$200 AO PASSAR.", "#FFFFFF");
 square[1] = new Square("Bangu", "R$60", "#8B4513", 60, 3, 2, 10, 30, 90, 160, 250);
@@ -132,12 +126,9 @@ square[37] = new Square("Ipanema", "R$350", "#0000FF", 350, 10, 35, 175, 500, 11
 square[38] = new Square("IPVA", "Pague R$100", "#FFFFFF");
 square[39] = new Square("Leblon", "R$400", "#0000FF", 400, 10, 50, 200, 600, 1400, 1700, 2000);
 
-// *** AQUI COMEÇA A TRADUÇÃO E CUSTOMIZAÇÃO DAS CARTAS ***
+var communityChestCards = [];
+var chanceCards = [];
 
-var communityChestCards = []; // Cartas "Cofre"
-var chanceCards = []; // Cartas "Sorte"
-
-// Cartas Cofre
 communityChestCards[0] = new Card("Saída Livre da Prisão. Esta carta pode ser guardada até ser usada ou vendida.", function(p) { p.communityChestJailCard = true; updateOwned();});
 communityChestCards[1] = new Card("Você ganhou o concurso Garota de Ipanema. Receba R$10.", function() { addamount(10, 'Cofre');});
 communityChestCards[2] = new Card("Venda de ações da Petrobrás. Você recebe R$50.", function() { addamount(50, 'Cofre');});
@@ -155,7 +146,6 @@ communityChestCards[13] = new Card("Avance até o \"INÍCIO\" (Receba R$200).", 
 communityChestCards[14] = new Card("Você foi cobrado por reparos de rua. R$40 por casa. R$115 por hotel.", function() { streetrepairs(40, 115);});
 communityChestCards[15] = new Card("Vá para a Prisão. Vá direto para a Prisão. Não passe pelo \"INÍCIO\". Não receba R$200.", function() { gotojail();});
 
-// Cartas Sorte
 chanceCards[0] = new Card("SAÍDA LIVRE DA PRISÃO. Esta carta pode ser guardada até ser usada ou trocada.", function(p) { p.chanceJailCard=true; updateOwned();});
 chanceCards[1] = new Card("Faça reparos gerais em todas as suas propriedades. Para cada casa, pague R$25. Para cada hotel, R$100.", function() { streetrepairs(25, 100);});
 chanceCards[2] = new Card("Multado por estacionar no calçadão. Pague R$15.", function() { subtractamount(15, 'Sorte');});
@@ -165,10 +155,10 @@ chanceCards[5] = new Card("AVANCE ATÉ A COMPANHIA MAIS PRÓXIMA (Light ou Natur
 chanceCards[6] = new Card("Você achou uma carteira na Lapa. Receba R$50.", function() { addamount(50, 'Sorte');});
 chanceCards[7] = new Card("AVANCE ATÉ O TRANSPORTE MAIS PRÓXIMO. Se NÃO TIVER DONO, compre. Se TIVER DONO, pague o dobro do aluguel.", function() { advanceToNearestRailroad();});
 chanceCards[8] = new Card("Pague imposto de pobreza de R$15.", function() { subtractamount(15, 'Sorte');});
-chanceCards[9] = new Card("Faça uma viagem pela SuperVia. Se você passar pelo \"INÍCIO\", receba R$200.", function() { advance(5);}); // Ajustei o nome para SuperVia (square[5])
-chanceCards[10] = new Card("AVANCE até o Leblon.", function() { advance(39);}); // Ajustei o nome para Leblon (square[39])
-chanceCards[11] = new Card("AVANCE até Copacabana. Se você passar pelo \"INÍCIO\", receba R$200.", function() { advance(24);}); // Ajustei o nome para Copacabana (square[24])
+chanceCards[9] = new Card("Faça uma viagem pela SuperVia. Se você passar pelo \"INÍCIO\", receba R$200.", function() { advance(5);});
+chanceCards[10] = new Card("AVANCE até o Leblon.", function() { advance(39);});
+chanceCards[11] = new Card("AVANCE até Copacabana. Se você passar pelo \"INÍCIO\", receba R$200.", function() { advance(24);});
 chanceCards[12] = new Card("Seu empréstimo de construção venceu. Receba R$150.", function() { addamount(150, 'Sorte');});
 chanceCards[13] = new Card("AVANCE ATÉ O TRANSPORTE MAIS PRÓXIMO. Se NÃO TIVER DONO, compre. Se TIVER DONO, pague o dobro do aluguel.", function() { advanceToNearestRailroad();});
-chanceCards[14] = new Card("AVANCE até o Méier. Se você passar pelo \"INÍCIO\", receba R$200.", function() { advance(11);}); // Ajustei o nome para Méier (square[11])
-chanceCards[15] = new Card("Vá para a Prisão. Vá Direto para a Prisão. Não passe pelo \"INÍCIO\". Não receba R$200.", function() { gotojail();});
+chanceCards[14] = new Card("ADVANCE to St. Charles Place. If you pass \"GO\" collect $200.", function() { advance(11);});
+chanceCards[15] = new Card("Vá direto para a Prisão. Não passe pelo INÍCIO, não receba R$200.", function() { gotojail();});

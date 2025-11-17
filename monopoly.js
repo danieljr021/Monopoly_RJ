@@ -9,7 +9,7 @@ function Game() {
 	var currentbidder = 1; // Jogador atual do lance
 	var auctionproperty; // Propriedade em leilão
 	
-	var freeParkingPot = 0; // ### NOSSO "POTE" PARA O ESTACIONAMENTO GRÁTIS ###
+	// REMOVI A VARIÁVEL DAQUI PARA ELA NÃO FICAR "TRANCADA"
 
 	this.rollDice = function() {
 		die1 = Math.floor(Math.random() * 6) + 1;
@@ -977,6 +977,16 @@ function Game() {
 			$("#board").hide();
 			$("#refresh").show();
 
+			// // Exibe contagem de paradas para fins de pesquisa.
+			// var text;
+			// for (var i = 0; i < 40; i++) {
+				// if (i === 0)
+					// text = square[i].landcount;
+				// else
+					// text += " " + square[i].landcount;
+			// }
+			// document.getElementById("refresh").innerHTML += "<br><br><div><textarea type='text' style='width: 980px;' onclick='javascript:select();' />" + text + "</textarea></div>";
+
 			popup("<p>Parabéns, " + player[1].name + ", você venceu o jogo!</p><div>");
 
 		} else {
@@ -1243,7 +1253,7 @@ function popup(HTML, action, option) {
 
 function updatePosition() {
 	// Reseta bordas
-	document.getElementById("jail").style.border = "1px solid black"; // Borda PRETA de volta
+	document.getElementById("jail").style.border = "1px solid black";
 	document.getElementById("jailpositionholder").innerHTML = "";
 	for (var i = 0; i < 40; i++) {
 		document.getElementById("cell" + i).style.border = "1px solid black";
@@ -1313,7 +1323,7 @@ function updatePosition() {
 	p = player[turn];
 
 	if (p.jail) {
-		document.getElementById("jail").style.border = "1px solid " + p.color; // Borda aparece se o jogador atual estiver preso
+		document.getElementById("jail").style.border = "1px solid " + p.color;
 	} else {
 		document.getElementById("cell" + p.position).style.border = "1px solid " + p.color;
 	}
@@ -1378,7 +1388,7 @@ function updateDice() {
 		if (element1.firstChild) {
 			element1 = element1.firstChild;
 		} else {
-			element1 = elementH.appendChild(document.createElement("img"));
+			element1 = element1.appendChild(document.createElement("img"));
 		}
 
 		element1.src = "images/Die_" + die1 + ".png";
@@ -1580,6 +1590,7 @@ function updateOption() {
 			for (var j = 0; j < max; j++) {
 				if (square[sq.group[j]].house > 0) {
 					allGroupUninproved = false;
+					// break; // Este break estava no código original, mas parece errado. Removi para checar o grupo todo.
 				}
 			}
 			
@@ -1909,7 +1920,7 @@ function streetrepairs(houseprice, hotelprice) {
 function payfifty() {
 	var p = player[turn];
 
-	document.getElementById("jail").style.border = '1px solid transparent'; // Borda da prisão invisível
+	document.getElementById("jail").style.border = '1px solid black';
 	document.getElementById("cell11").style.border = '2px solid ' + p.color;
 
 	$("#landed").hide();
@@ -1928,7 +1939,7 @@ function payfifty() {
 function useJailCard() {
 	var p = player[turn];
 
-	document.getElementById("jail").style.border = '1px solid transparent'; // Borda da prisão invisível
+	document.getElementById("jail").style.border = '1px solid black';
 	document.getElementById("cell11").style.border = '2px solid ' + p.color;
 
 	$("#landed").hide();
@@ -2273,6 +2284,7 @@ function land(increasedRent) {
 				rent = 12.5;
 			}
 			
+			// No classic edition, o aluguel dobra para cada ferrovia
 			var railroadCount = 0;
 			if (square[5].owner == s.owner) {
 				railroadCount++;
@@ -2287,7 +2299,7 @@ function land(increasedRent) {
 				railroadCount++;
 			}
 			
-			rent = rent * Math.pow(2, railroadCount);
+			rent = rent * Math.pow(2, railroadCount); // 12.5 * 2^1=25, 12.5 * 2^2=50, ...
 			
 			if(increasedRent) rent *= 2; // Dobra se veio da carta Sorte
 
@@ -2447,7 +2459,7 @@ function roll() {
 
 		updateDice(die1, die2);
 		if (die1 == die2) {
-			document.getElementById("jail").style.border = "1px solid transparent"; // Borda da prisão invisível
+			document.getElementById("jail").style.border = "1px solid black"; // Borda da Prisão
 			document.getElementById("cell11").style.border = "2px solid " + p.color;
 			$("#landed").hide();
 
@@ -2589,7 +2601,7 @@ function setup() {
 		p = player[playerArray[i - 1]];
 
 
-		p.color = document.getElementById("player" + i + "color").value; // Removido .toLowerCase()
+		p.color = document.getElementById("player" + i + "color").value;
 
 		if (document.getElementById("player" + i + "ai").value === "0") {
 			p.name = document.getElementById("player" + i + "name").value;
@@ -2952,3 +2964,5 @@ window.onload = function() {
 
 
 };
+
+var freeParkingPot = 0;
